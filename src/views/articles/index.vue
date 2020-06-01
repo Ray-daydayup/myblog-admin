@@ -1,5 +1,5 @@
 <template>
-  <h1>文章管理</h1>
+  <router-view></router-view>
 </template>
 
 <script>

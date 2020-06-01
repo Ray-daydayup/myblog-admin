@@ -13,7 +13,8 @@
     </v-navigation-drawer>
     <head-bar :drawer.sync="drawer"></head-bar>
     <v-content>
-      <router-view></router-view>
+      <breadcrumb></breadcrumb>
+      <router-view class="content"></router-view>
     </v-content>
   </v-app>
 </template>
@@ -21,27 +22,24 @@
 <script>
 import menuList from './components/menuList'
 import headBar from './components/headBar'
+import breadcrumb from './components/breadcrumb'
 export default {
   components: {
     menuList,
-    headBar
+    headBar,
+    breadcrumb
   },
   props: {
     source: String
   },
   data: () => ({
     drawer: null
-  }),
-  watch: {
-    drawer(newVal, oldVal) {
-      // this.$emit('update:drawer', newVal)
-      console.log('outer', newVal, oldVal)
-    }
-  },
-  mounted() {
-    console.log(this.$vuetify)
-  }
+  })
 }
 </script>
 
-<style></style>
+<style scoped>
+.content {
+  padding: 0 24px;
+}
+</style>

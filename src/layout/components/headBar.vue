@@ -20,7 +20,7 @@
       class="hidden-sm-and-down"
     ></v-text-field>
     <v-spacer></v-spacer>
-    <v-btn icon large>
+    <v-btn icon large @click="$router.push('/articles/edit')">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
     <v-btn icon large>
@@ -40,5 +40,3 @@ export default {
   }
 }
 </script>
-
-<style></style>

@@ -1,5 +1,5 @@
 <template>
-  <h1 style="height: 100vh;">文章管理edit</h1>
+  <h1>文章管理</h1>
 </template>
 
 <script>

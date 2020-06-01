@@ -41,13 +41,6 @@ export default {
       ],
       item: 1
     }
-  },
-  watch: {
-    item(newval, oldval) {
-      console.log(newval, oldval)
-    }
   }
 }
 </script>
-
-<style></style>

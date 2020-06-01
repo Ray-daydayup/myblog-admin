@@ -9,6 +9,7 @@ const routes = [
     path: '/',
     name: 'layout',
     redirect: '/home',
+    meta: { name: '主页' },
     component: Layout,
     children: [
       {
@@ -19,27 +20,40 @@ const routes = [
       {
         path: 'articles',
         name: 'articles',
-        component: () => import('@/views/articles/index')
+        redirect: '/articles/management',
+        meta: { name: '文章管理' },
+        component: () => import('@/views/articles/index'),
+        children: [
+          {
+            path: 'management',
+            name: 'Management',
+            component: () => import('@/views/articles/management/index')
+          },
+          {
+            path: 'edit',
+            name: 'Edit',
+            meta: { name: '新建文章' },
+            component: () => import('@/views/articles/edit/index')
+          }
+        ]
       },
       {
         path: 'tags',
         name: 'Tags',
+        meta: { name: '标签管理' },
         component: () => import('@/views/tags/index')
       },
       {
         path: 'categories',
         name: 'Categories',
+        meta: { name: '分类管理' },
         component: () => import('@/views/categories/index')
       },
       {
         path: 'users',
         name: 'Users',
+        meta: { name: '用户管理' },
         component: () => import('@/views/users/index')
-      },
-      {
-        path: 'articles/edit',
-        name: 'Edit',
-        component: () => import('@/views/articles/edit/index')
       }
     ]
   },
