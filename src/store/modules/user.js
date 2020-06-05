@@ -1,0 +1,56 @@
+import { getToken, setToken, getUser, setUser } from '@/utils/token'
+import { getUserInfo, login } from '@/api/user'
+const userStore = {
+  namespaced: true,
+  state: () => ({
+    token: getToken(),
+    info: getUser(),
+    isShow: false,
+    title: '登录'
+  }),
+  mutations: {
+    CHANGE_SHOW(state, flag) {
+      state.isShow = flag
+    },
+    SET_TOKEN(state, token) {
+      state.token = token
+      setToken(token)
+    },
+    SET_INFO(state, info) {
+      state.info = info
+      setUser(info)
+    },
+    SET_TITLE(state, title) {
+      state.title = title
+    }
+  },
+  actions: {
+    showLogin({ commit }, title = '登录') {
+      commit('CHANGE_SHOW', true)
+      commit('SET_TITLE', title)
+    },
+    hideLogin({ commit }) {
+      commit('CHANGE_SHOW', false)
+    },
+    async login({ commit, dispatch }, data) {
+      const res = await login(data)
+      if (res) {
+        commit('SET_TOKEN', res.data.token)
+        dispatch('getUserInfo')
+        dispatch('hideLogin')
+        return true
+      }
+      return false
+    },
+    async getUserInfo({ commit }) {
+      const res = await getUserInfo()
+      if (res) {
+        commit('SET_INFO', res)
+        return true
+      }
+      return false
+    }
+  }
+}
+
+export default userStore

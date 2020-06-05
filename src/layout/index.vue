@@ -13,6 +13,8 @@
     </v-navigation-drawer>
     <head-bar :drawer.sync="drawer"></head-bar>
     <v-content>
+      <popup></popup>
+      <login-dialog></login-dialog>
       <breadcrumb></breadcrumb>
       <router-view class="content"></router-view>
     </v-content>
@@ -23,14 +25,15 @@
 import menuList from './components/menuList'
 import headBar from './components/headBar'
 import breadcrumb from './components/breadcrumb'
+import popup from './components/popup'
+import loginDialog from './components/loginDialog'
 export default {
   components: {
     menuList,
     headBar,
-    breadcrumb
-  },
-  props: {
-    source: String
+    breadcrumb,
+    popup,
+    loginDialog
   },
   data: () => ({
     drawer: null

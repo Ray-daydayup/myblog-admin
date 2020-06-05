@@ -1,7 +1,6 @@
 import axios from 'axios'
 import tokenUnless from './tokenUnless'
 import { getToken } from './token'
-import { login } from '../api/user'
 import handleResponse from './httpException'
 
 const http = axios.create({
@@ -21,19 +20,23 @@ http.interceptors.request.use(
       const token = getToken()
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
-      } else {
-        const data = {
-          username: 'ztr',
-          password: '1021'
-        }
-        console.log('我去要 token 啦')
-        const res = await login(data)
-        if (!res) {
-          console.log('没要到 token🙃 >>', res)
-        }
-        console.log('要到 token 啦😀 >>', res)
-        config.headers.Authorization = `Bearer ${res.token}`
       }
+      // else {
+      //   store.dispatch('user/showLogin', 'Token认证失败！请重新登录')
+      //   console.log('http Token认证失败')
+      //   return
+      //   // const data = {
+      //   //   username: 'ztr',
+      //   //   password: '1021'
+      //   // }
+      //   // console.log('我去要 token 啦')
+      //   // const res = await login(data)
+      //   // if (!res) {
+      //   //   console.log('没要到 token🙃 >>', res)
+      //   // }
+      //   // console.log('要到 token 啦😀 >>', res)
+      //   // config.headers.Authorization = `Bearer ${res.token}`
+      // }
     }
     return config
   },
@@ -46,7 +49,7 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   (response) => {
     if (handleResponse(response)) {
-      return response.data.data || response.data.msg
+      return response.data
     }
     return false
   },

@@ -61,7 +61,7 @@
       <v-icon small class="mr-4" @click="editItem(item)">
         mdi-pencil
       </v-icon>
-      <v-icon color="red darken-4" small @click="deleteItem(item.id)">
+      <v-icon color="red darken-4" small @click="deleteItem(item)">
         mdi-delete
       </v-icon>
     </template>
@@ -125,8 +125,16 @@ export default {
     async getTagList() {
       this.loading = true
       const res = await tagApi.getTagList()
-      this.desserts = res || []
       this.loading = false
+      if (res && res.code === 200) {
+        this.desserts = res.data
+        return
+      }
+      if (res && res.code !== 200) {
+        this.$store.dispatch('popup/showSnackbar', [res.msg, 'error'])
+        return
+      }
+      this.desserts = []
     },
     editItem(item) {
       this.editedIndex = item.id
@@ -134,10 +142,21 @@ export default {
       this.editedName = this.editedItem.name
       this.dialog = true
     },
-    async deleteItem(id) {
-      confirm('Are you sure you want to delete this item?') &&
-        (await tagApi.delTag(id))
-      this.getTagList()
+    async deleteItem(item) {
+      const id = item.id
+      const callback = async (flag) => {
+        if (flag) {
+          const res = await tagApi.delTag(id)
+          const message = res.code === 200 ? '标签删除成功！' : res.msg
+          const color = res.code === 200 ? 'success' : 'error'
+          this.$store.dispatch('popup/showSnackbar', [message, color])
+          res.code === 200 && this.getTagList()
+        }
+      }
+      this.$store.dispatch('popup/showDialog', [
+        `是否确定删除标签 -- ${item.name}?`,
+        callback
+      ])
     },
     close() {
       this.dialog = false
@@ -147,8 +166,6 @@ export default {
       })
     },
     async save() {
-      console.log(this.editedItem)
-      console.log(this.editedIndex)
       let res = ''
       if (this.editedIndex > -1) {
         if (!this.nameChangeFlag) {
@@ -161,9 +178,17 @@ export default {
       } else {
         res = await tagApi.addTag(this.editedItem)
       }
-      console.log(res)
-      this.getTagList()
       this.close()
+      if (!res) {
+        return
+      }
+      if (res.code !== 200) {
+        this.$store.dispatch('popup/showSnackbar', [res.msg, 'error'])
+        return
+      }
+      const message = res.data.line ? '标签修改成功！' : '标签新增成功！'
+      this.$store.dispatch('popup/showSnackbar', [message, 'success'])
+      this.getTagList()
     }
   }
 }
