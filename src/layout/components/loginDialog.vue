@@ -4,9 +4,9 @@
       <v-toolbar dark flat>
         <v-toolbar-title>{{ user.title }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn icon large @click="hideLogin">
+        <!-- <v-btn icon large @click="hideLogin">
           <v-icon>mdi-close</v-icon>
-        </v-btn>
+        </v-btn> -->
       </v-toolbar>
       <v-card-text class="mt-4">
         <v-form ref="form">
@@ -18,6 +18,8 @@
             type="text"
             v-model="username"
             :rules="rules.username"
+            :error="usernameError.flag"
+            :error-messages="usernameError.msg"
             clearable
           ></v-text-field>
 
@@ -31,6 +33,8 @@
             :type="pwdShow ? 'text' : 'password'"
             :append-icon="pwdShow ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="pwdShow = !pwdShow"
+            :error="passwordError.flag"
+            :error-messages="passwordError.msg"
             v-model="password"
             clearable
           ></v-text-field>
@@ -62,14 +66,8 @@ export default {
         msg: ''
       },
       rules: {
-        username: [
-          (value) => !!value || '用户名不能为空',
-          () => !this.usernameError.flag || this.usernameError.msg
-        ],
-        password: [
-          (value) => !!value || '密码不能为空',
-          () => !this.passwordError.flag || this.passwordError.msg
-        ]
+        username: [(value) => !!value || '用户名不能为空'],
+        password: [(value) => !!value || '密码不能为空']
       }
     }
   },
@@ -77,6 +75,16 @@ export default {
     ...mapState({
       user: (state) => state.user
     })
+  },
+  watch: {
+    username: function() {
+      this.usernameError.flag = false
+      this.usernameError.msg = ''
+    },
+    password: function() {
+      this.passwordError.flag = false
+      this.passwordError.msg = ''
+    }
   },
   methods: {
     ...mapActions('user', ['showLogin', 'hideLogin', 'login']),
@@ -90,10 +98,18 @@ export default {
         password: this.password.trim()
       }
       const res = await this.login(data)
-      if (res) {
-        this.$refs.form.resetValidation()
-        this.$refs.form.reset()
+      if (res.rootResponse.code === 2004) {
+        this.usernameError.flag = !res.flag
+        this.usernameError.msg = res.rootResponse.msg
+        return
       }
+      if (res.rootResponse.code === 2007) {
+        this.passwordError.flag = !res.flag
+        this.passwordError.msg = res.rootResponse.msg
+        return
+      }
+      this.$refs.form.resetValidation()
+      this.$refs.form.reset()
     }
   }
 }

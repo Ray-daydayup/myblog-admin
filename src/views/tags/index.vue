@@ -66,7 +66,7 @@
       </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary">Reset</v-btn>
+      <v-btn color="primary">未获取到数据</v-btn>
     </template>
   </v-data-table>
 </template>
@@ -125,16 +125,8 @@ export default {
     async getTagList() {
       this.loading = true
       const res = await tagApi.getTagList()
+      this.desserts = res.flag ? res.data : []
       this.loading = false
-      if (res && res.code === 200) {
-        this.desserts = res.data
-        return
-      }
-      if (res && res.code !== 200) {
-        this.$store.dispatch('popup/showSnackbar', [res.msg, 'error'])
-        return
-      }
-      this.desserts = []
     },
     editItem(item) {
       this.editedIndex = item.id
@@ -147,10 +139,13 @@ export default {
       const callback = async (flag) => {
         if (flag) {
           const res = await tagApi.delTag(id)
-          const message = res.code === 200 ? '标签删除成功！' : res.msg
-          const color = res.code === 200 ? 'success' : 'error'
-          this.$store.dispatch('popup/showSnackbar', [message, color])
-          res.code === 200 && this.getTagList()
+          if (res.flag) {
+            this.$store.dispatch('popup/showSnackbar', [
+              '标签删除成功！',
+              'success'
+            ])
+            this.getTagList()
+          }
         }
       }
       this.$store.dispatch('popup/showDialog', [
@@ -179,11 +174,7 @@ export default {
         res = await tagApi.addTag(this.editedItem)
       }
       this.close()
-      if (!res) {
-        return
-      }
-      if (res.code !== 200) {
-        this.$store.dispatch('popup/showSnackbar', [res.msg, 'error'])
+      if (!res.flag) {
         return
       }
       const message = res.data.line ? '标签修改成功！' : '标签新增成功！'

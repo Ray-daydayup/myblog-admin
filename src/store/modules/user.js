@@ -1,5 +1,14 @@
-import { getToken, setToken, getUser, setUser } from '@/utils/token'
+import {
+  getToken,
+  setToken,
+  getUser,
+  setUser,
+  removeToken,
+  removeUser
+} from '@/utils/token'
 import { getUserInfo, login } from '@/api/user'
+import router from '@/router'
+
 const userStore = {
   namespaced: true,
   state: () => ({
@@ -34,21 +43,35 @@ const userStore = {
     },
     async login({ commit, dispatch }, data) {
       const res = await login(data)
-      if (res) {
+      if (res.flag) {
         commit('SET_TOKEN', res.data.token)
         dispatch('getUserInfo')
         dispatch('hideLogin')
-        return true
+      } else {
+        commit('SET_TOKEN', null)
+        removeToken()
       }
-      return false
+      return res
     },
     async getUserInfo({ commit }) {
       const res = await getUserInfo()
-      if (res) {
-        commit('SET_INFO', res)
-        return true
+      if (res.flag) {
+        commit('SET_INFO', res.data)
+      } else {
+        commit('SET_INFO', null)
+        removeUser()
       }
-      return false
+      return res
+    },
+    loginOut({ dispatch, commit }) {
+      commit('SET_TOKEN', null)
+      commit('SET_INFO', null)
+      removeToken()
+      removeUser()
+      dispatch('popup/showSnackbar', ['退出登录成功!', 'success'], {
+        root: true
+      })
+      router.push('/')
     }
   }
 }

@@ -66,7 +66,7 @@
       </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary">Reset</v-btn>
+      <v-btn color="primary">未获取到数据</v-btn>
     </template>
   </v-data-table>
 </template>
@@ -125,16 +125,8 @@ export default {
     async getCategories() {
       this.loading = true
       const res = await categoryApi.getCategories()
+      this.desserts = res.flag ? res.data : []
       this.loading = false
-      if (res && res.code === 200) {
-        this.desserts = res.data
-        return
-      }
-      if (res && res.code !== 200) {
-        this.$store.dispatch('popup/showSnackbar', [res.msg, 'error'])
-        return
-      }
-      this.desserts = []
     },
     editItem(item) {
       this.editedIndex = item.id
@@ -147,10 +139,13 @@ export default {
       const callback = async (flag) => {
         if (flag) {
           const res = await categoryApi.delCategory(id)
-          const message = res.code === 200 ? '分类删除成功！' : res.msg
-          const color = res.code === 200 ? 'success' : 'error'
-          this.$store.dispatch('popup/showSnackbar', [message, color])
-          res.code === 200 && this.getCategories()
+          if (res.flag) {
+            this.$store.dispatch('popup/showSnackbar', [
+              '分类删除成功！',
+              'success'
+            ])
+            this.getCategories()
+          }
         }
       }
       this.$store.dispatch('popup/showDialog', [
@@ -179,11 +174,7 @@ export default {
         res = await categoryApi.addCategory(this.editedItem)
       }
       this.close()
-      if (!res) {
-        return
-      }
-      if (res.code !== 200) {
-        this.$store.dispatch('popup/showSnackbar', [res.msg, 'error'])
+      if (!res.flag) {
         return
       }
       const message = res.data.line ? '分类修改成功！' : '分类新增成功！'
