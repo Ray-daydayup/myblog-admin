@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <div>
     <v-navigation-drawer
       v-model="drawer"
       :clipped="$vuetify.breakpoint.lgAndUp"
@@ -16,9 +16,9 @@
       <popup></popup>
       <login-dialog></login-dialog>
       <breadcrumb></breadcrumb>
-      <router-view class="content"></router-view>
+      <keep-alive><router-view class="content"></router-view></keep-alive>
     </v-content>
-  </v-app>
+  </div>
 </template>
 
 <script>

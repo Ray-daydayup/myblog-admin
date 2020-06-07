@@ -13,7 +13,7 @@ import store from '@/store'
 
 router.beforeEach((to, from, next) => {
   const token = store.state.user.token
-  console.log('token', token)
+  // console.log('token', token)
   if (!token) {
     store.dispatch('user/showLogin', '登录')
     if (to.path !== '/' && to.path !== '/home') {
