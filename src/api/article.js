@@ -24,5 +24,3 @@ export const updateArticle = async function(data) {
   const res = await http.post('/article/update', data)
   return res
 }
-
-export default {}

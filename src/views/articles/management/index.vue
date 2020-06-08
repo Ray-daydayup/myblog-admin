@@ -4,6 +4,8 @@
     :items="desserts"
     :search="search"
     :loading="loading"
+    sort-by="modifiedtime"
+    sort-desc
     loading-text="数据加载中……"
     class="elevation-1"
   >
@@ -35,11 +37,22 @@
           hide-details
         ></v-text-field>
         <v-spacer></v-spacer>
-        <v-btn color="primary" outlined dark class="mb-2">新增文章</v-btn>
+        <v-btn
+          color="primary"
+          outlined
+          dark
+          class="mb-2"
+          @click="$router.push('/articles/edit/0')"
+          >新增文章</v-btn
+        >
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-4">
+      <v-icon
+        small
+        @click="$router.push(`/articles/edit/${item.article_id}`)"
+        class="mr-4"
+      >
         mdi-pencil
       </v-icon>
       <v-icon color="red darken-4" small @click="deleteItem(item)">
@@ -47,14 +60,13 @@
       </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary">未获取到数据</v-btn>
+      <v-btn color="primary" @click="getArticleList">未获取到数据，重试</v-btn>
     </template>
   </v-data-table>
 </template>
 
 <script>
-import categoryApi from '@/api/categories'
-import { getArticleList } from '@/api/article'
+import { getArticleList, delArticle } from '@/api/article'
 export default {
   data() {
     return {
@@ -104,26 +116,26 @@ export default {
   methods: {
     async getArticleList() {
       this.loading = true
-      const res = await getArticleList(1, 10)
+      const res = await getArticleList(1, 100)
       this.desserts = res.flag ? res.data : []
       this.loading = false
     },
     async deleteItem(item) {
-      const id = item.id
+      const id = item.article_id
       const callback = async (flag) => {
         if (flag) {
-          const res = await categoryApi.delCategory(id)
+          const res = await delArticle(id)
           if (res.flag) {
             this.$store.dispatch('popup/showSnackbar', [
-              '分类删除成功！',
+              '文章删除成功！',
               'success'
             ])
-            this.getCategories()
+            this.getArticleList()
           }
         }
       }
       this.$store.dispatch('popup/showDialog', [
-        `是否确定删除分类 -- ${item.name}?`,
+        `是否确定删除文章 >> ${item.title}?`,
         callback
       ])
     }

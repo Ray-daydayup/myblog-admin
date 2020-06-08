@@ -30,8 +30,9 @@ const routes = [
             component: () => import('@/views/articles/management/index')
           },
           {
-            path: 'edit',
+            path: 'edit/:id',
             name: 'Edit',
+            props: true,
             meta: { name: '新建文章' },
             component: () => import('@/views/articles/edit/index')
           }

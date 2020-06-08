@@ -79,7 +79,7 @@
       </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary">未获取到数据</v-btn>
+      <v-btn color="primary" @click="getUserList">未获取到数据，点击重试</v-btn>
     </template>
   </v-data-table>
 </template>
