@@ -42,7 +42,7 @@
           outlined
           dark
           class="mb-2"
-          @click="$router.push('/articles/edit/0')"
+          @click="$router.push('/articles/edit/-1')"
           >新增文章</v-btn
         >
       </v-toolbar>
@@ -67,6 +67,7 @@
 
 <script>
 import { getArticleList, delArticle } from '@/api/article'
+import { timestampFormat } from '@/utils/time'
 export default {
   data() {
     return {
@@ -94,19 +95,7 @@ export default {
   },
   computed: {
     timeConvert() {
-      return (timestamp) => {
-        const dateTime = new Date(timestamp)
-        const y = dateTime.getFullYear()
-        let m = dateTime.getMonth() + 1
-        m = m < 10 ? '0' + m : m
-        let d = dateTime.getDate() + 1
-        d = d < 10 ? '0' + d : d
-        let h = dateTime.getHours() + 1
-        h = h < 10 ? '0' + h : h
-        let min = dateTime.getMinutes() + 1
-        min = min < 10 ? '0' + min : min
-        return y + '/' + m + '/' + d + ' ' + h + ':' + min
-      }
+      return timestampFormat
     }
   },
   created() {

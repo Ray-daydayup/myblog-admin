@@ -8,6 +8,9 @@ export const handle200 = function(response, formatRes) {
   if (response.code === 2100) {
     store.dispatch('popup/showSnackbar', [response.msg, 'error'])
   }
+  if (response.code === 2005) {
+    store.dispatch('popup/showSnackbar', [response.msg, 'error'])
+  }
   formatRes.flag = false
 }
 
