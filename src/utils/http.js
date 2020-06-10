@@ -4,7 +4,7 @@ import { getToken } from './token'
 import handleResponse from './httpException/index'
 
 const http = axios.create({
-  baseURL: '',
+  baseURL: '/api',
   timeout: 5000,
   headers: {
     'Content-type': 'application/json'

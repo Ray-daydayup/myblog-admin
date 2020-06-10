@@ -2,6 +2,14 @@ module.exports = {
   transpileDependencies: ['vuetify'],
   productionSourceMap: false,
   devServer: {
-    proxy: 'http://raydaydayup.cn:3000'
+    proxy: {
+      '/api': {
+        target: 'http://raydaydayup.cn:3000',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
   }
 }
