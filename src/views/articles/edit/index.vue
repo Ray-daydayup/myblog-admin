@@ -20,7 +20,7 @@
             :rules="rules"
           ></v-text-field>
         </v-col>
-        <v-col v-if="id === '0'" cols="12" sm="6">
+        <v-col v-if="id === '-1'" cols="12" sm="6">
           <v-file-input
             chips
             label="从本地上传"

@@ -7,6 +7,11 @@ export const getArticleList = async function(page, pageSize) {
   return res
 }
 
+export const getCount = async function() {
+  const res = await http.get('/article/list/count')
+  return res
+}
+
 export const getArticleById = async function(id) {
   const res = await http.get(`/article/list/${id}`)
   return res

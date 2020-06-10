@@ -1,4 +1,7 @@
 module.exports = {
+  publicPath: './',
+  outputDir: 'dist',
+  runtimeCompiler: true,
   transpileDependencies: ['vuetify'],
   productionSourceMap: false,
   devServer: {
