@@ -201,7 +201,7 @@ export default {
       if (!this.$refs.form.validate()) {
         return
       }
-      if (this.editArticle.content === '' || this.editArticle.content === '') {
+      if (this.editArticle.abstract === '' || this.editArticle.content === '') {
         this.$store.dispatch('popup/showSnackbar', [
           '摘要和正文不能为空！！！',
           'error'
